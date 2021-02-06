@@ -3,11 +3,12 @@ FROM node:14.8.0-stretch
 RUN mkdir -p /usr/src/app && \
     chown node:node /usr/src/app
 
-USER node:node 
+USER node:node
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node . . 
+COPY --chown=node:node package.json .
+COPY --chown=node:node package-lock.json .
 
 RUN npm install && \
     npm install redis@0.8.1 && \
@@ -16,11 +17,17 @@ RUN npm install && \
     npm install aws-sdk@2.738.0 && \
     npm install rethinkdbdash@2.3.31
 
+COPY --chown=node:node . .
+
 ENV STORAGE_TYPE=memcached \
     STORAGE_HOST=127.0.0.1 \
     STORAGE_PORT=11211\
     STORAGE_EXPIRE_SECONDS=2592000\
     STORAGE_DB=2 \
+    STORAGE_S3_ACCESS_KEY= \
+    STORAGE_S3_ACCESS_KEY_ID= \
+    STORAGE_S3_ENDPOINT= \
+    STORAGE_S3_BUCKET= \
     STORAGE_AWS_BUCKET= \
     STORAGE_AWS_REGION= \
     STORAGE_USENAMER= \
